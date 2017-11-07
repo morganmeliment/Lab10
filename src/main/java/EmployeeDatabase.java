@@ -15,7 +15,7 @@ public class EmployeeDatabase {
     /**
      * List of employees.
      */
-    public List<Employee> employees;
+    private List<Employee> employees;
 
     /**
      * Constructor which initializes the employees list.
@@ -30,10 +30,10 @@ public class EmployeeDatabase {
     /**
      * Returns the manager for the given employee.
      *
-     * @param employee
-     * @return
+     * @param employee hi.
+     * @return manager.
      */
-    Employee findManager(final Employee employee) {
+    public Employee findManager(final Employee employee) {
         Employee manager = null;
         for (int i = 0; i < employees.size(); i++) {
             if (employees.get(i).getName() == employee.getManager()) {
@@ -53,9 +53,11 @@ public class EmployeeDatabase {
      * @return int
      */
     public int countManagersAbove(final Employee employee) {
-        /*
-         * Implement this function
-         */
+        Employee thisManager = this.findManager(employee);
+        if (thisManager == null) {
+            return 0;
+        }
+        return 1 + countManagersAbove(thisManager);
     }
 
     /**
@@ -67,9 +69,20 @@ public class EmployeeDatabase {
      * @return int
      */
     public int countEmployeesUnder(final Employee employee) {
-        /*
-         * Implement this function
-         */
+        List<Employee> dirUnder = new ArrayList<Employee>();
+        for (int i = 0; i < this.employees.size(); i++) {
+            if (this.findManager(this.employees.get(i)) == employee) {
+                dirUnder.add(this.employees.get(i));
+            }
+        }
+        if (dirUnder.size() == 0) {
+            return 0;
+        }
+        int count = 0;
+        for (int i = 0; i < dirUnder.size(); i++) {
+            count += countEmployeesUnder(dirUnder.get(i));
+        }
+        return dirUnder.size() + count;
     }
 
     /**
